@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>Skeleton</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+	    <div class="container">
+			<div class="page-header">
+				<h1>Tasks manager example</h1>
+				<p class="lead">Just an simple tasks example in node.js + express + nunjucks</p>
+			</div>
+
+	        <h3>Tasks</h3>
+            <table class="table table-striped">
+                <thead>
+                    <th>Task</th>
+                    <th> Delete?</th>
+				<thead>
+                <tbody>
+					{% for task in tasks %}
+					<tr>
+					<td>{{ task.title }}</td>
+					<td><a class="delete" href="#" rel="{{ task.id }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<form class="form-inline" role="form" action="/tasks" method="post">
+			  <div class="form-group">
+			    <div class="input-group">
+			      <label class="sr-only" for="exampleInputEmail2">Task</label>
+			      <input class="form-control" id="taskName" name="task" placeholder="Enter task name">
+			    </div>
+			  </div>
+			  <button type="submit" class="btn btn-default">Add</button>
+			</form>
+		</div>
+    </body>
+    <script>
+        $(document).ready(function () {
+			$('table tbody').on('click', 'td a.delete', deleteTask);
+			function deleteTask(event) {
+			    event.preventDefault();
+			    var confirmation = confirm('Are you sure you want to delete this task?');
+			    if (confirmation === true) {
+			        $.ajax({
+			            type: 'DELETE',
+			            url: '/tasks/' + $(this).attr('rel')
+			        }).done(function( response ) {
+			            if (response.msg === '') {
+			            }
+			            else {
+			                alert('Error: ' + response.msg);
+			            }
+						location.reload();
+			        });
+			    }
+			    else {
+			        return false;
+			    }
+			};			
+		});
+	</script>
+</html>
